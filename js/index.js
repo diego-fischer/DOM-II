@@ -16,6 +16,7 @@ let zoomAlertMsg = 0
 document.querySelectorAll('a.nav-link').forEach((e) => {
   e.addEventListener('click', (e) => {
     e.target.classList.toggle('shadedTag')
+    e.stopImmediatePropagation()
     const firstLetter = e.target.innerText.charAt(0)
     alert(`From now on you can select me by pressing ${firstLetter}`)
   })
@@ -106,11 +107,7 @@ window.addEventListener('resize', reportWindowSize)
 //9 - mouseup
 
 window.addEventListener('mouseup', (event) => {
-  if (document.getSelection()) {
-    alert(`You've just selected ${document.getSelection().toString()}`)
-  } else if (window.getSelection()) {
-    alert(`You've just selected ${document.getSelection().toString()}`)
-  } else if (document.selection) {
+  if (document.getSelection().toString().length > 0) {
     alert(`You've just selected ${document.getSelection().toString()}`)
   }
 })
@@ -127,11 +124,36 @@ document.addEventListener('mousemove', (event) => {
         Math.pow(lastSeenAt.y - event.clientY, 2) +
           Math.pow(lastSeenAt.x - event.clientX, 2)
       )
-      console.log(
-        'So far your mouse ran this many pixels:   ' + Math.round(totalDistance)
-      )
+      if (Math.round(totalDistance) % 1000 === 0) {
+        console.log(
+          'So far your mouse ran this many pixels:   ' +
+            Math.round(totalDistance)
+        )
+      }
     }
     lastSeenAt.x = event.clientX
     lastSeenAt.y = event.clientY
   }
+})
+
+// 11-prevent default
+
+document.querySelectorAll('div.btn').forEach((element) => {
+  element.addEventListener('click', (event) => {
+    event.preventDefault()
+    console.log('EVENT DEFAULT PREVENTED', event.defaultPrevented)
+  })
+})
+
+// document.querySelectorAll('a.nav-link').forEach((element) => {
+//   element.addEventListener((event) => {
+//     event.preventDefault()
+//   })
+// })
+
+//12- logging lack of stop propagation
+document.querySelectorAll('a.nav-link').forEach((element) => {
+  element.addEventListener('click', (event) => {
+    console.log(`UNDESIRED PROPAGATION OF ${event.target}`)
+  })
 })
